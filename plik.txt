@@ -1,1 +1,99 @@
-jkjghjgffchcfgggcffch
+#include <stdio.h>
+#include <stdlib.h>
+
+void deleteMatrix(int** ptab, int n)
+{
+    for(int i=0; i<n; i++)
+        free(ptab[i]);
+    free(ptab);
+}
+
+void deleteContinousMatrix(int*** atab)
+{
+    free((*atab)[0]);
+    free(*atab);
+    *atab=NULL;
+}
+
+int** createMatrix(int n)
+{
+  int **dtab;
+  dtab=malloc(n*sizeof(int*));
+  if (dtab!=NULL)
+  {
+      for(int i=0; i<n;i++)
+      {
+          dtab[i]=malloc(n*sizeof(int));
+          if (dtab[i]==NULL)
+            {
+            deleteMatrix(dtab,i);
+            return NULL;
+            }
+      }
+
+  }
+  return dtab;
+}
+
+int createContinousMatrix(int*** atab, int n)
+{
+    int *tablica=malloc(n*n*sizeof(int));
+    if (tablica!=NULL)
+    {
+        *atab=malloc(n*sizeof(int*));
+        if (*atab!=NULL)
+        {
+            for (int i=0; i<n; i++)
+            {
+                (*atab)[i]=&tablica[i*n];
+            }
+            return 0;
+        }
+        else
+        {
+            free(tablica);
+            return -1;
+        }
+    }
+    else return -1;
+}
+
+void fillMatrix(int** tab, int n)
+{
+    for(int i=0; i<n; i++)
+    {
+        for(int j=0; j<n; j++)
+            {
+                tab[i][j]=i*n+j+1;
+            }
+    }
+}
+
+void printMatrix(int** tab, int n)
+{
+    for(int i=0; i<n; i++)
+    {
+        for(int j=0; j<n; j++)
+        {
+             printf("%4d",tab[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+int copyMatrix(int*** pdest, int** src, int n)
+{
+    int dest=createContinousMatrix(pdest, n);
+    if (dest==-1) return -1;
+    else
+    {
+        for (int i=0; i<n; i++)
+        {
+
+            for(int j=0; j<n; j++)
+            (*pdest)[i][j]=src[i][j];
+        }
+    }
+    return 0;
+
+}
